@@ -39,11 +39,10 @@ initialCards.forEach(card => {
 const pageContent = document.querySelector('.page__content');
 const popupEdit = pageContent.querySelector('.popup_type_edit');
 const popupNew = pageContent.querySelector('.popup_type_new-card');
-const popupContent = pageContent.querySelector('popup__content');
 const profileInfo = pageContent.querySelector('.profile');
 const profileEditButton = profileInfo.querySelector('.profile__edit-button');
 const profileAddButton = profileInfo.querySelector('.profile__add-button');
-const closeButtons = document.querySelectorAll('.popup__close');
+const popups = Array.from(document.querySelectorAll('.popup'));
 let target; // в него будет падать открытый popup
 
 function openPopup(popup) {
@@ -53,29 +52,27 @@ function openPopup(popup) {
 function closePopup(popup) {
 	popup.classList.remove('popup_is-opened');
 }
-function keyChecker(evt, popup) {
+function keyChecker(evt) {
 	if (evt.keyCode === 27) {
-		closePopup(popup);
+		target = popupChecker();
+		closePopup(target);
 	}
 }
-function clickChecker(evt) {
-	let closeButton;
-	let popupIsOpened;
-	closeButtons.forEach(button => {
-		if (button.closest('.popup_is-opened')) {
-			closeButton = button;
-			popupIsOpened = closeButton.closest('.popup_is-opened');
-			return closeButton, popupIsOpened;
+function popupChecker() {
+	popups.forEach(function (popup) {
+		if (popup.classList.contains('popup_is-opened')) {
+			target = popup;
 		}
 	});
-	target =
-		evt.target === closeButton
-			? popupIsOpened
-			: evt.target;
-	const targetIf =
-		!(target === popupContent) &&
-		(popupIsOpened || target === closeButton);
-	if (targetIf) closePopup(target);
+	return target;
+}
+function clickChecker(evt) {
+	target = popupChecker();
+	const closeButton = target.querySelector('.popup__close');
+	const popupContent = target.querySelector('.popup__content');
+	if ((evt.target === closeButton || evt.target === target) && evt.target !== popupContent) {
+		closePopup(target);
+	}
 }
 profileEditButton.addEventListener('click', function (evt) {
 	evt.stopPropagation();
@@ -85,7 +82,6 @@ profileAddButton.addEventListener('click', function (evt) {
 	evt.stopPropagation();
 	target = openPopup(popupNew);
 });
-document.addEventListener('keydown', function (evt) {
-	keyChecker(evt, target);
-});
+
+document.addEventListener('keydown', keyChecker);
 pageContent.addEventListener('click', clickChecker);
