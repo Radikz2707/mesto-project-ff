@@ -122,10 +122,12 @@ function handleEditFormSubmit(evt) {
 }
 function handleAddFormSubmit(evt) {
 	evt.preventDefault();
-	let place = placeInput.value;
-	let link = placeLink.value;
-	// closePopup(findOpenPopup());
-	// createCard(place, link);
+	const card = {
+		name: placeInput.value,
+		link: placeLink.value,
+	};
+	closePopup(findOpenPopup());
+	createCard(card);
 	placeInput.value = '';
 	placeLink.value = '';
 }
