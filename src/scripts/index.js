@@ -35,7 +35,8 @@ function createCard(card, removeCard, openCardImagePopup) {
 	cardImage.alt = card.name;
 	cardTitle.textContent = card.name;
 
-	cardElement.addEventListener('click', openCardImagePopup);
+	const openCard = () => openCardImagePopup(card);
+	 cardImage.addEventListener('click', openCard);
 
 	// Функция слушателя реализация 1ый способ
 	// const removeButtonClick = evt => {
@@ -123,8 +124,8 @@ function handleAddFormSubmit(evt) {
 	evt.preventDefault();
 	let place = placeInput.value;
 	let link = placeLink.value;
-	closePopup(findOpenPopup());
-	createCard(place, link);
+	// closePopup(findOpenPopup());
+	// createCard(place, link);
 	placeInput.value = '';
 	placeLink.value = '';
 }
