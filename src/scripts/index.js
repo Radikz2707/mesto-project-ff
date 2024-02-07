@@ -143,6 +143,6 @@ function openCardImagePopup({ name, link }) {
 		// тут запишем полученное в src и alt
 		popupImage.src = link;
 		popupImage.alt = name;
-		openPopup(popupImage);
+		openPopup(popupCard);
 	};
 
