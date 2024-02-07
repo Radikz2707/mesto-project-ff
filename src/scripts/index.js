@@ -9,6 +9,9 @@ const popupEditForm = popupEdit.querySelector('.popup__form');
 const nameInput = popupEditForm.querySelector('.popup__input_type_name');
 const jobInput = popupEditForm.querySelector('.popup__input_type_description');
 const popupNew = pageContent.querySelector('.popup_type_new-card');
+const popupNewForm = popupNew.querySelector('.popup__form');
+const placeInput = popupNewForm.querySelector('.popup__input_type_card-name');
+const placeLink = popupNewForm.querySelector('.popup__input_type_url');
 const profileInfo = pageContent.querySelector('.profile');
 const profileEditButton = profileInfo.querySelector('.profile__edit-button');
 const profileAddButton = profileInfo.querySelector('.profile__add-button');
@@ -22,7 +25,7 @@ jobInput.value = profileJob.textContent;
 const popupCard = pageContent.querySelector('.popup_type_image');
 const popupImage = popupCard.querySelector('.popup__image');
 
-function createCard(card, removeCard) {
+function createCard(card, removeCard, openCardImagePopup) {
 	const cardTemplate = document.querySelector('#card-template').content;
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
 	const removeButton = cardElement.querySelector('.card__delete-button');
@@ -32,7 +35,7 @@ function createCard(card, removeCard) {
 	cardImage.alt = card.name;
 	cardTitle.textContent = card.name;
 
-	cardList.addEventListener('click', PopupImage);
+	cardElement.addEventListener('click', openCardImagePopup);
 
 	// Функция слушателя реализация 1ый способ
 	// const removeButtonClick = evt => {
@@ -50,7 +53,7 @@ function removeCard(cardNode) {
 	cardNode.remove();
 }
 initialCards.forEach(card => {
-	const newCard = createCard(card, removeCard);
+	const newCard = createCard(card, removeCard, openCardImagePopup);
 	cardList.append(newCard);
 });
 //-----------------------------------------------------
@@ -118,15 +121,22 @@ function handleEditFormSubmit(evt) {
 }
 function handleAddFormSubmit(evt) {
 	evt.preventDefault();
+	let place = placeInput.value;
+	let link = placeLink.value;
+	closePopup(findOpenPopup());
+	createCard(place, link);
+	placeInput.value = '';
+	placeLink.value = '';
 }
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
+popupNewForm.addEventListener('submit', handleAddFormSubmit);
 
-function PopupImage(evt) {
-	const card = evt.target;
-	const src = card.src;
-	const alt = card.alt;
-	openCardImagePopup(alt, src);
-}
+// function PopupImage(evt) {
+// 	const card = evt.target;
+// 	const src = card.src;
+// 	const alt = card.alt;
+// 	openCardImagePopup(alt, src);
+// }
 
 function openCardImagePopup({ name, link }) {
 		// тут запишем полученное в src и alt
