@@ -25,18 +25,22 @@ jobInput.value = profileJob.textContent;
 const popupCard = pageContent.querySelector('.popup_type_image');
 const popupImage = popupCard.querySelector('.popup__image');
 
-function createCard(card, removeCard, openCardImagePopup) {
+function createCard(card, removeCard, openCardImagePopup, likeButtonClick) {
 	const cardTemplate = document.querySelector('#card-template').content;
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
 	const removeButton = cardElement.querySelector('.card__delete-button');
 	const cardTitle = cardElement.querySelector('.card__title');
 	const cardImage = cardElement.querySelector('.card__image');
+	const like = cardElement.querySelector('.card__like-button');
 	cardImage.src = card.link;
 	cardImage.alt = card.name;
 	cardTitle.textContent = card.name;
 
-	const openCard = () => openCardImagePopup(card);
-	 cardImage.addEventListener('click', openCard);
+	const openPopupImage = () => openCardImagePopup(card);
+	 cardImage.addEventListener('click', openPopupImage);
+
+	 const likeButton = () => likeButtonClick(like);
+	like.addEventListener('click', likeButton)
 
 	// Функция слушателя реализация 1ый способ
 	// const removeButtonClick = evt => {
@@ -54,14 +58,14 @@ function removeCard(cardNode) {
 	cardNode.remove();
 }
 initialCards.forEach(card => {
-	const newCard = createCard(card, removeCard, openCardImagePopup);
+	const newCard = createCard(card, removeCard, openCardImagePopup, likeButtonClick);
 	cardList.append(newCard);
 });
 //-----------------------------------------------------
 
 function openPopup(popup) {
 	// функция для открытия попапа
-	popup.classList.add('popup_is-opened');
+	popup.classList.add('popup_is-opened', 'popup_is-animated');
 	document.addEventListener('keydown', keyChecker);
 	return popup;
 }
@@ -70,7 +74,7 @@ function closePopup(popup) {
 	if (!popup) {
 		return;
 	}
-	popup.classList.remove('popup_is-opened');
+	popup.classList.remove('popup_is-opened', 'popup_is-animated');
 	document.removeEventListener('keydown', keyChecker);
 }
 function keyChecker(evt) {
@@ -126,20 +130,13 @@ function handleAddFormSubmit(evt) {
 		name: placeInput.value,
 		link: placeLink.value,
 	};
-	closePopup(findOpenPopup());
-	createCard(card);
+	cardList.prepend(createCard(card, removeCard, openCardImagePopup, likeButtonClick));
+	closePopup(popupNew);
 	placeInput.value = '';
 	placeLink.value = '';
 }
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
 popupNewForm.addEventListener('submit', handleAddFormSubmit);
-
-// function PopupImage(evt) {
-// 	const card = evt.target;
-// 	const src = card.src;
-// 	const alt = card.alt;
-// 	openCardImagePopup(alt, src);
-// }
 
 function openCardImagePopup({ name, link }) {
 		// тут запишем полученное в src и alt
@@ -147,4 +144,8 @@ function openCardImagePopup({ name, link }) {
 		popupImage.alt = name;
 		openPopup(popupCard);
 	};
+
+	function likeButtonClick(like)	{
+		like.classList.toggle('card__like-button_is-active');
+	}
 
