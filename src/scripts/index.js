@@ -1,7 +1,18 @@
 'use strict';
 
 import '../styles/index.css'; // добавьте импорт главного файла стилей
-import { initialCards } from './cards';
+import {
+	initialCards,
+	createCard,
+	removeCard,
+	likeButtonClick,
+} from '../components/cards';
+import {
+	openPopup,
+	closePopup,
+	handleCloseButtonClick,
+	handleOverlayClick,
+} from '../components/modal';
 
 const pageContent = document.querySelector('.page__content');
 const popupEdit = pageContent.querySelector('.popup_type_edit');
@@ -19,87 +30,20 @@ const profileTitle = profileInfo.querySelector('.profile__title');
 const profileJob = profileInfo.querySelector('.profile__description');
 const popups = Array.from(document.querySelectorAll('.popup'));
 const cardList = document.querySelector('.places__list');
-const cards = Array.from(cardList.querySelectorAll('.card'));
 nameInput.value = profileTitle.textContent;
 jobInput.value = profileJob.textContent;
 const popupCard = pageContent.querySelector('.popup_type_image');
 const popupImage = popupCard.querySelector('.popup__image');
 
-function createCard(card, removeCard, openCardImagePopup, likeButtonClick) {
-	const cardTemplate = document.querySelector('#card-template').content;
-	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-	const removeButton = cardElement.querySelector('.card__delete-button');
-	const cardTitle = cardElement.querySelector('.card__title');
-	const cardImage = cardElement.querySelector('.card__image');
-	const like = cardElement.querySelector('.card__like-button');
-	cardImage.src = card.link;
-	cardImage.alt = card.name;
-	cardTitle.textContent = card.name;
-
-	const openPopupImage = () => openCardImagePopup(card);
-	 cardImage.addEventListener('click', openPopupImage);
-
-	 const likeButton = () => likeButtonClick(like);
-	like.addEventListener('click', likeButton)
-
-	// Функция слушателя реализация 1ый способ
-	// const removeButtonClick = evt => {
-	// 	const cardItem = evt.target.closest('.card')
-	// 	removeCard(cardItem)
-	// }
-
-	// Функция слушателя реализация 2ой способ
-	const removeButtonClick = () => removeCard(cardElement);
-
-	removeButton.addEventListener('click', removeButtonClick);
-	return cardElement;
-}
-function removeCard(cardNode) {
-	cardNode.remove();
-}
 initialCards.forEach(card => {
-	const newCard = createCard(card, removeCard, openCardImagePopup, likeButtonClick);
+	const newCard = createCard(
+		card,
+		removeCard,
+		openCardImagePopup,
+		likeButtonClick
+	);
 	cardList.append(newCard);
 });
-//-----------------------------------------------------
-
-function openPopup(popup) {
-	// функция для открытия попапа
-	popup.classList.add('popup_is-opened', 'popup_is-animated');
-	document.addEventListener('keydown', keyChecker);
-	return popup;
-}
-function closePopup(popup) {
-	// функция для закрытия попапа
-	if (!popup) {
-		return;
-	}
-	popup.classList.remove('popup_is-opened', 'popup_is-animated');
-	document.removeEventListener('keydown', keyChecker);
-}
-function keyChecker(evt) {
-	// функция для закрытия попапа по кнопке ESC
-	const target = findOpenPopup();
-	const ESC_CODE = 27;
-	if (evt.keyCode === ESC_CODE) {
-		closePopup(target);
-	}
-}
-function findOpenPopup() {
-	// функция для определения попапа, который открыт в данный момент
-	return popups.find(popup => popup.classList.contains('popup_is-opened'));
-}
-
-function handleCloseButtonClick(evt) {
-	const popup = evt.target.closest('.popup');
-	closePopup(popup);
-}
-
-function handleOverlayClick(evt) {
-	if (evt.target === evt.currentTarget) {
-		closePopup(evt.target);
-	}
-}
 
 popups.forEach(popup => {
 	popup
@@ -107,6 +51,42 @@ popups.forEach(popup => {
 		.addEventListener('click', handleCloseButtonClick);
 	popup.addEventListener('click', handleOverlayClick);
 });
+
+export function findOpenPopup() {
+	// функция для определения попапа, который открыт в данный момент
+	return popups.find(popup => popup.classList.contains('popup_is-opened'));
+}
+
+function handleEditFormSubmit(evt) {
+	evt.preventDefault();
+	let name = nameInput.value;
+	let job = jobInput.value;
+	profileTitle.textContent = name;
+	profileJob.textContent = job;
+	closePopup(findOpenPopup());
+}
+
+function handleAddFormSubmit(evt) {
+	evt.preventDefault();
+	const card = {
+		name: placeInput.value,
+		link: placeLink.value,
+	};
+
+	cardList.prepend(
+		createCard(card, removeCard, openCardImagePopup, likeButtonClick)
+	);
+	closePopup(popupNew);
+	placeInput.value = '';
+	placeLink.value = '';
+}
+
+function openCardImagePopup({ name, link }) {
+	// тут запишем полученное в src и alt
+	popupImage.src = link;
+	popupImage.alt = name;
+	openPopup(popupCard);
+}
 
 profileEditButton.addEventListener('click', function (evt) {
 	evt.stopPropagation();
@@ -116,36 +96,5 @@ profileAddButton.addEventListener('click', function (evt) {
 	evt.stopPropagation();
 	openPopup(popupNew);
 });
-function handleEditFormSubmit(evt) {
-	evt.preventDefault();
-	let name = nameInput.value;
-	let job = jobInput.value;
-	profileTitle.textContent = name;
-	profileJob.textContent = job;
-	closePopup(findOpenPopup());
-}
-function handleAddFormSubmit(evt) {
-	evt.preventDefault();
-	const card = {
-		name: placeInput.value,
-		link: placeLink.value,
-	};
-	cardList.prepend(createCard(card, removeCard, openCardImagePopup, likeButtonClick));
-	closePopup(popupNew);
-	placeInput.value = '';
-	placeLink.value = '';
-}
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
 popupNewForm.addEventListener('submit', handleAddFormSubmit);
-
-function openCardImagePopup({ name, link }) {
-		// тут запишем полученное в src и alt
-		popupImage.src = link;
-		popupImage.alt = name;
-		openPopup(popupCard);
-	};
-
-	function likeButtonClick(like)	{
-		like.classList.toggle('card__like-button_is-active');
-	}
-
