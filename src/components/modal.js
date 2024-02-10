@@ -8,11 +8,11 @@ function openPopup(popup) {
 
 function closeByEsc(evt) {
 	// функция для закрытия попапа по кнопке ESC
-	const target = popups.find(popup =>
-		popup.classList.contains('popup_is-opened')
-	);
 	const ESC_CODE = 27;
 	if (evt.keyCode === ESC_CODE) {
+		const target = popups.find(popup =>
+			popup.classList.contains('popup_is-opened')
+		);
 		closePopup(target);
 	}
 }
@@ -26,18 +26,10 @@ function closePopup(popup) {
 	document.removeEventListener('keydown', closeByEsc);
 }
 
-popups.forEach(popup => {
-	popup
-		.querySelector('.popup__close')
-		.addEventListener('click', () => closePopup(popup));
-	popup.addEventListener('click', handleOverlayClick);
-});
-
-
 function handleOverlayClick(evt) {
 	if (evt.target === evt.currentTarget) {
 		closePopup(evt.target);
 	}
 }
 
-export { openPopup, closePopup };
+export { openPopup, closePopup, handleOverlayClick };

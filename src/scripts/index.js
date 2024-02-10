@@ -3,7 +3,7 @@
 import '../styles/index.css'; // добавьте импорт главного файла стилей
 import { initialCards } from './cards';
 import { removeCard, createCard, likeButtonClick } from '../components/card';
-import { openPopup, closePopup } from '../components/modal';
+import { openPopup, closePopup, handleOverlayClick } from '../components/modal';
 
 const pageContent = document.querySelector('.page__content');
 const popupEdit = pageContent.querySelector('.popup_type_edit');
@@ -20,8 +20,7 @@ const profileAddButton = profileInfo.querySelector('.profile__add-button');
 const profileTitle = profileInfo.querySelector('.profile__title');
 const profileJob = profileInfo.querySelector('.profile__description');
 const cardList = document.querySelector('.places__list');
-nameInput.value = profileTitle.textContent;
-jobInput.value = profileJob.textContent;
+const popups = Array.from(document.querySelectorAll('.popup'));
 const popupCard = pageContent.querySelector('.popup_type_image');
 const popupImage = popupCard.querySelector('.popup__image');
 const popupCardCaption = popupCard.querySelector('.popup__caption');
@@ -34,6 +33,13 @@ initialCards.forEach(card => {
 		likeButtonClick
 	);
 	cardList.append(newCard);
+});
+
+popups.forEach(popup => {
+	popup
+		.querySelector('.popup__close')
+		.addEventListener('click', () => closePopup(popup));
+	popup.addEventListener('click', handleOverlayClick);
 });
 
 
@@ -71,6 +77,8 @@ function openCardImagePopup({ name, link }) {
 
 profileEditButton.addEventListener('click', function (evt) {
 	evt.stopPropagation();
+	nameInput.value = profileTitle.textContent;
+	jobInput.value = profileJob.textContent;
 	openPopup(popupEdit);
 });
 profileAddButton.addEventListener('click', function (evt) {
