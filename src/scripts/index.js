@@ -1,18 +1,9 @@
 'use strict';
 
 import '../styles/index.css'; // добавьте импорт главного файла стилей
-import {
-	initialCards,
-	createCard,
-	removeCard,
-	likeButtonClick,
-} from '../components/cards';
-import {
-	openPopup,
-	closePopup,
-	handleCloseButtonClick,
-	handleOverlayClick,
-} from '../components/modal';
+import { initialCards } from './cards';
+import { removeCard, createCard, likeButtonClick } from '../components/card';
+import { openPopup, closePopup } from '../components/modal';
 
 const pageContent = document.querySelector('.page__content');
 const popupEdit = pageContent.querySelector('.popup_type_edit');
@@ -28,12 +19,12 @@ const profileEditButton = profileInfo.querySelector('.profile__edit-button');
 const profileAddButton = profileInfo.querySelector('.profile__add-button');
 const profileTitle = profileInfo.querySelector('.profile__title');
 const profileJob = profileInfo.querySelector('.profile__description');
-const popups = Array.from(document.querySelectorAll('.popup'));
 const cardList = document.querySelector('.places__list');
 nameInput.value = profileTitle.textContent;
 jobInput.value = profileJob.textContent;
 const popupCard = pageContent.querySelector('.popup_type_image');
 const popupImage = popupCard.querySelector('.popup__image');
+const popupCardCaption = popupCard.querySelector('.popup__caption');
 
 initialCards.forEach(card => {
 	const newCard = createCard(
@@ -45,25 +36,14 @@ initialCards.forEach(card => {
 	cardList.append(newCard);
 });
 
-popups.forEach(popup => {
-	popup
-		.querySelector('.popup__close')
-		.addEventListener('click', handleCloseButtonClick);
-	popup.addEventListener('click', handleOverlayClick);
-});
-
-export function findOpenPopup() {
-	// функция для определения попапа, который открыт в данный момент
-	return popups.find(popup => popup.classList.contains('popup_is-opened'));
-}
 
 function handleEditFormSubmit(evt) {
 	evt.preventDefault();
-	let name = nameInput.value;
-	let job = jobInput.value;
+	const name = nameInput.value;
+	const job = jobInput.value;
 	profileTitle.textContent = name;
 	profileJob.textContent = job;
-	closePopup(findOpenPopup());
+	closePopup(popupEdit);
 }
 
 function handleAddFormSubmit(evt) {
@@ -85,6 +65,7 @@ function openCardImagePopup({ name, link }) {
 	// тут запишем полученное в src и alt
 	popupImage.src = link;
 	popupImage.alt = name;
+	popupCardCaption.textContent = name;
 	openPopup(popupCard);
 }
 

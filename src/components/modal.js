@@ -1,15 +1,16 @@
-import { findOpenPopup } from '../scripts';
+const popups = Array.from(document.querySelectorAll('.popup'));
 
 function openPopup(popup) {
 	// функция для открытия попапа
 	popup.classList.add('popup_is-opened');
-	document.addEventListener('keydown', keyChecker);
-	return popup;
+	document.addEventListener('keydown', closeByEsc);
 }
 
-function keyChecker(evt) {
+function closeByEsc(evt) {
 	// функция для закрытия попапа по кнопке ESC
-	const target = findOpenPopup();
+	const target = popups.find(popup =>
+		popup.classList.contains('popup_is-opened')
+	);
 	const ESC_CODE = 27;
 	if (evt.keyCode === ESC_CODE) {
 		closePopup(target);
@@ -22,13 +23,16 @@ function closePopup(popup) {
 		return;
 	}
 	popup.classList.remove('popup_is-opened');
-	document.removeEventListener('keydown', keyChecker);
+	document.removeEventListener('keydown', closeByEsc);
 }
 
-function handleCloseButtonClick(evt) {
-	const popup = evt.target.closest('.popup');
-	closePopup(popup);
-}
+popups.forEach(popup => {
+	popup
+		.querySelector('.popup__close')
+		.addEventListener('click', () => closePopup(popup));
+	popup.addEventListener('click', handleOverlayClick);
+});
+
 
 function handleOverlayClick(evt) {
 	if (evt.target === evt.currentTarget) {
@@ -36,4 +40,4 @@ function handleOverlayClick(evt) {
 	}
 }
 
-export { openPopup, closePopup, handleCloseButtonClick, handleOverlayClick };
+export { openPopup, closePopup };
