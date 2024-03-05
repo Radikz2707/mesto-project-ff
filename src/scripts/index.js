@@ -29,9 +29,6 @@ const popupCard = pageContent.querySelector('.popup_type_image');
 const popupImage = popupCard.querySelector('.popup__image');
 const popupCardCaption = popupCard.querySelector('.popup__caption');
 
-clearValidation(popupEditForm, ValidationConfig);
-clearValidation(popupNewForm, ValidationConfig);
-
 initialCards.forEach(card => {
 	const newCard = createCard(
 		card,
@@ -85,10 +82,12 @@ profileEditButton.addEventListener('click', function (evt) {
 	evt.stopPropagation();
 	nameInput.value = profileTitle.textContent;
 	jobInput.value = profileJob.textContent;
+	clearValidation(popupEditForm, ValidationConfig);
 	openPopup(popupEdit);
 });
 profileAddButton.addEventListener('click', function (evt) {
 	evt.stopPropagation();
+	clearValidation(popupNewForm, ValidationConfig);
 	openPopup(popupNew);
 });
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
