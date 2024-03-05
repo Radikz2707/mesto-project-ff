@@ -48,17 +48,19 @@
 						<input
 							type="text"
 							name="name"
-							class="popup__input popup__input_type_name"
-							placeholder="Имя"
+							class="popup__input popup__input_type_name" id="popup__input_type_name"
+							placeholder="Имя" minlength="2" maxlength="40" pattern="^[a-zA-Zа-яА-Я\sё\-]+$" data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
 							required
 						/>
+						<span class="popup__input_type_name-error"></span>
 						<input
 							type="text"
 							name="description"
-							class="popup__input popup__input_type_description"
-							placeholder="Занятие"
+							class="popup__input popup__input_type_description" id="popup__input_type_description"
+							placeholder="Занятие" minlength="2" maxlength="200" pattern="^[a-zA-Zа-яА-Я\sё\-]+$" data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
 							required
 						/>
+						<span class="popup__input_type_description-error"></span>
 						<button type="submit" class="button popup__button">
 							Сохранить
 						</button>
@@ -73,17 +75,19 @@
 						<input
 							type="text"
 							name="place-name"
-							class="popup__input popup__input_type_card-name"
-							placeholder="Название"
+							class="popup__input popup__input_type_card-name" id="popup__input_type_card-name"
+							placeholder="Название" minlength="2" maxlength="30"
 							required
 						/>
+						<span class="popup__input_type_card-name-error"></span>
 						<input
 							type="url"
 							name="link"
-							class="popup__input popup__input_type_url"
+							class="popup__input popup__input_type_url" id="popup__input_type_url"
 							placeholder="Ссылка на картинку"
 							required
 						/>
+						<span class="popup__input_type_url-error"></span>
 						<button type="submit" class="button popup__button">
 							Сохранить
 						</button>

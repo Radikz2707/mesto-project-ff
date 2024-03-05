@@ -4,6 +4,10 @@ import '../styles/index.css'; // добавьте импорт главного 
 import { initialCards } from './cards';
 import { removeCard, createCard, likeButtonClick } from '../components/card';
 import { openPopup, closePopup, handleOverlayClick } from '../components/modal';
+import { ValidationConfig } from '../components/constant';
+import { clearValidation, enableValidation } from '../components/validation';
+
+enableValidation(ValidationConfig);
 
 const pageContent = document.querySelector('.page__content');
 const popupEdit = pageContent.querySelector('.popup_type_edit');
@@ -25,6 +29,9 @@ const popupCard = pageContent.querySelector('.popup_type_image');
 const popupImage = popupCard.querySelector('.popup__image');
 const popupCardCaption = popupCard.querySelector('.popup__caption');
 
+clearValidation(popupEditForm, ValidationConfig);
+clearValidation(popupNewForm, ValidationConfig);
+
 initialCards.forEach(card => {
 	const newCard = createCard(
 		card,
@@ -42,13 +49,13 @@ popups.forEach(popup => {
 	popup.addEventListener('click', handleOverlayClick);
 });
 
-
 function handleEditFormSubmit(evt) {
 	evt.preventDefault();
 	const name = nameInput.value;
 	const job = jobInput.value;
 	profileTitle.textContent = name;
 	profileJob.textContent = job;
+	enableValidation(ValidationConfig)
 	closePopup(popupEdit);
 }
 
@@ -58,7 +65,6 @@ function handleAddFormSubmit(evt) {
 		name: placeInput.value,
 		link: placeLink.value,
 	};
-
 	cardList.prepend(
 		createCard(card, removeCard, openCardImagePopup, likeButtonClick)
 	);
