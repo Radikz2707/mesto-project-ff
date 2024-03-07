@@ -15,7 +15,6 @@ function clearValidation(formElement, ValidationConfig) {
 		hideInputError(formElement, inputElement, ValidationConfig);
 	});
 	toggleButtonState(inputList, buttonElement, ValidationConfig);
-	buttonElement.classList.add(inactiveButtonClass);
 }
 
 function hasInvalidInput(inputList) {

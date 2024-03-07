@@ -2,7 +2,9 @@ export function createCard(
 	card,
 	removeCard,
 	openCardImagePopup,
-	likeButtonClick
+	likeButtonClick,
+	userId,
+	howManyLikes
 ) {
 	const cardTemplate = document.querySelector('#card-template').content;
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -10,9 +12,11 @@ export function createCard(
 	const cardTitle = cardElement.querySelector('.card__title');
 	const cardImage = cardElement.querySelector('.card__image');
 	const like = cardElement.querySelector('.card__like-button');
+	const likes = cardElement.querySelector('.likes')
 	cardImage.src = card.link;
 	cardImage.alt = card.name;
 	cardTitle.textContent = card.name;
+	likes.textContent = howManyLikes;
 
 	const openPopupImage = () => openCardImagePopup(card);
 	cardImage.addEventListener('click', openPopupImage);
@@ -28,7 +32,6 @@ export function createCard(
 
 	// Функция слушателя реализация 2ой способ
 	const removeButtonClick = () => removeCard(cardElement);
-
 	removeButton.addEventListener('click', removeButtonClick);
 	return cardElement;
 }
@@ -39,4 +42,14 @@ export function removeCard(cardNode) {
 
 export function likeButtonClick(like) {
 	like.classList.toggle('card__like-button_is-active');
+}
+
+export function toggleRemoveButton(card, userId, removeButton)	{
+	if(card.owner._id !== userId)	{
+		console.log(true);
+		removeButton.classList.add('card__delete-button_disabled');
+	}else {
+		console.log(false);
+		removeButton.classlist.remove('card__delete-button_disabled');
+	}
 }

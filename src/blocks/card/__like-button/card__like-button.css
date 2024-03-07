@@ -1,20 +1,37 @@
 .card__like-button {
-  width: 21px;
-  height: 18px;
-  background: transparent url('../../../images/like-inactive.svg') no-repeat;
-  
-  background-size: 21px 18px;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
-  -webkit-transition: 0.3s;
-  -moz-transition: 0.3s;
-  -ms-transition: 0.3s;
-  -o-transition: 0.3s;
-  transition: 0.3s;
+	width: 21px;
+	height: 18px;
+	background: transparent url('../../../images/like-inactive.svg') no-repeat;
+
+	background-size: 21px 18px;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	-webkit-transition: 0.3s;
+	-moz-transition: 0.3s;
+	-ms-transition: 0.3s;
+	-o-transition: 0.3s;
+	transition: 0.3s;
 }
 
 .card__like-button:hover {
-  opacity: 0.6;
+	opacity: 0.6;
+}
+
+.likes {
+	color: rgb(0, 0, 0);
+	font-family: Inter, sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 16px;
+	letter-spacing: 0%;
+	text-align: center;
+}
+
+.card__like-box	{
+	display: inline-flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
 }
