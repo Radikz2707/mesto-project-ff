@@ -7,7 +7,7 @@ function enableValidation(ValidationConfig) {
 }
 
 function clearValidation(formElement, ValidationConfig) {
-	let { inputSelector, submitButtonSelector, inactiveButtonClass } =
+	let { inputSelector, submitButtonSelector } =
 		ValidationConfig;
 	const inputList = Array.from(formElement.querySelectorAll(inputSelector));
 	const buttonElement = formElement.querySelector(submitButtonSelector);
