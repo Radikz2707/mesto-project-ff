@@ -16,6 +16,10 @@ import {
 	getInitialCards,
 	updateProfile,
 	newPlace,
+	deleteCard,
+	putLike,
+	deleteLike,
+	changeAvatar
 } from '../components/api';
 
 enableValidation(ValidationConfig);
@@ -30,11 +34,14 @@ const popupNewForm = popupNew.querySelector('.popup__form');
 const placeInput = popupNewForm.querySelector('.popup__input_type_card-name');
 const placeLink = popupNewForm.querySelector('.popup__input_type_url');
 const profileInfo = pageContent.querySelector('.profile');
-const avatar = profileInfo.querySelector('.profile__image');
+const avatarImg = profileInfo.querySelector('.profile__image');
 const profileEditButton = profileInfo.querySelector('.profile__edit-button');
 const profileAddButton = profileInfo.querySelector('.profile__add-button');
 const profileTitle = profileInfo.querySelector('.profile__title');
 const profileJob = profileInfo.querySelector('.profile__description');
+const popupEditAvatar = pageContent.querySelector('.popup_type_edit_avatar');
+const popupEditAvatarForm = popupEditAvatar.querySelector('.popup__form');
+const avatarLink = popupEditAvatarForm.querySelector('.popup__input_type_avatar_link');
 const cardList = document.querySelector('.places__list');
 const popups = Array.from(document.querySelectorAll('.popup'));
 const popupCard = pageContent.querySelector('.popup_type_image');
@@ -53,7 +60,7 @@ let howManyLikes = 0;
 function changeProfile(user) {
 	profileTitle.textContent = user.name;
 	profileJob.textContent = user.about;
-	avatar.style.backgroundImage = `url(${user.avatar})`;
+	avatarImg.style.backgroundImage = `url(${user.avatar})`;
 	updateProfile();
 }
 
@@ -68,7 +75,10 @@ Promise.all([getInitialCards(), getUserInfo()]).then(([cards, user]) => {
 			openCardImagePopup,
 			likeButtonClick,
 			userId,
-			howManyLikes
+			howManyLikes,
+			deleteCard,
+			putLike,
+			deleteLike
 		);
 		cardList.append(newCard);
 	});
@@ -95,9 +105,8 @@ function handleAddFormSubmit(evt) {
 	const card = {
 		name: placeInput.value,
 		link: placeLink.value,
-		_id: userId,
 	};
-	newPlace(card);
+	newPlace(card, userId);
 	cardList.prepend(
 		createCard(
 			card,
@@ -105,12 +114,22 @@ function handleAddFormSubmit(evt) {
 			openCardImagePopup,
 			likeButtonClick,
 			userId,
-			howManyLikes
+			howManyLikes,
+			deleteCard,
+			putLike,
+			deleteLike
 		)
 	);
 	closePopup(popupNew);
 	placeInput.value = '';
 	placeLink.value = '';
+}
+
+function handleEditAvatarFormSubmit(evt)	{
+	evt.preventDefault();
+	const avatarUrl = avatarLink.value;
+	changeAvatar(avatarUrl);
+	closePopup(popupEditAvatar);
 }
 
 function openCardImagePopup({ name, link }) {
@@ -133,5 +152,11 @@ profileAddButton.addEventListener('click', function (evt) {
 	clearValidation(popupNewForm, ValidationConfig);
 	openPopup(popupNew);
 });
+avatarImg.addEventListener('click', function(evt)	{
+	evt.stopPropagation();
+	clearValidation(popupEditAvatarForm, ValidationConfig);
+	openPopup(popupEditAvatar);
+})
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
 popupNewForm.addEventListener('submit', handleAddFormSubmit);
+popupEditForm.addEventListener('submit', handleEditAvatarFormSubmit);

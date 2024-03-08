@@ -1,10 +1,14 @@
+// import { deleteCard, putLike } from './api';
+
 export function createCard(
 	card,
 	removeCard,
 	openCardImagePopup,
 	likeButtonClick,
 	userId,
-	howManyLikes
+	howManyLikes,
+	putLike,
+	deleteLike
 ) {
 	const cardTemplate = document.querySelector('#card-template').content;
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -12,16 +16,33 @@ export function createCard(
 	const cardTitle = cardElement.querySelector('.card__title');
 	const cardImage = cardElement.querySelector('.card__image');
 	const like = cardElement.querySelector('.card__like-button');
-	const likes = cardElement.querySelector('.likes')
+	const likesBox = cardElement.querySelector('.likes');
+	likesBox.textContent = howManyLikes;
 	cardImage.src = card.link;
 	cardImage.alt = card.name;
 	cardTitle.textContent = card.name;
-	likes.textContent = howManyLikes;
-
 	const openPopupImage = () => openCardImagePopup(card);
 	cardImage.addEventListener('click', openPopupImage);
+	
+	Array.from(card.likes).forEach(item => {
+		if (item._id === userId) {
+			likeButtonClick(like);
+		}
+	});
 
-	const likeButton = () => likeButtonClick(like);
+	const likeButton = () => {
+		if (like.classList.contains('card__like-button_is-active')) {
+			likeButtonClick(like);
+			deleteLike(card._id).then(res => {
+				likesBox.textContent = res.likes.length;
+			});
+		} else {
+			likeButtonClick(like);
+			putLike(card._id).then(res => {
+				likesBox.textContent = res.likes.length;
+			});
+		}
+	};
 	like.addEventListener('click', likeButton);
 
 	// Функция слушателя реализация 1ый способ
@@ -31,8 +52,16 @@ export function createCard(
 	// }
 
 	// Функция слушателя реализация 2ой способ
-	const removeButtonClick = () => removeCard(cardElement);
-	removeButton.addEventListener('click', removeButtonClick);
+	const removeButtonClick = () => {
+		deleteCard(card._id);
+		removeCard(cardElement);
+	};
+	let ownerId = card.owner._id;
+	if (ownerId !== userId) {
+		removeCard(removeButton);
+	} else {
+		removeButton.addEventListener('click', removeButtonClick);
+	}
 	return cardElement;
 }
 
@@ -42,14 +71,4 @@ export function removeCard(cardNode) {
 
 export function likeButtonClick(like) {
 	like.classList.toggle('card__like-button_is-active');
-}
-
-export function toggleRemoveButton(card, userId, removeButton)	{
-	if(card.owner._id !== userId)	{
-		console.log(true);
-		removeButton.classList.add('card__delete-button_disabled');
-	}else {
-		console.log(false);
-		removeButton.classlist.remove('card__delete-button_disabled');
-	}
 }

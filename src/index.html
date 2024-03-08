@@ -101,6 +101,25 @@
 					<p class="popup__caption"></p>
 				</div>
 			</div>
+			<div class="popup popup_type_edit_avatar popup_is-animated">
+				<div class="popup__content">
+					<button type="button" class="popup__close"></button>
+					<h3 class="popup__title">Обновить аватар</h3>
+					<form class="popup__form" name="edit-avatar">
+						<input
+							type="url"
+							name="link"
+							class="popup__input popup__input_type_avatar_link" id="popup__input_type_avatar_link"
+							placeholder="Ссылка на аватар"
+							required
+						/>
+						<span class="popup__input_type_avatar_link-error"></span>
+						<button type="submit" class="button popup__button">
+							Сохранить
+						</button>
+					</form>
+				</div>
+			</div>
 		</div>
 
 		<template id="card-template">
