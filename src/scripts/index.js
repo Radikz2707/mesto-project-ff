@@ -128,6 +128,7 @@ function handleAddFormSubmit(evt) {
 function handleEditAvatarFormSubmit(evt)	{
 	evt.preventDefault();
 	const avatarUrl = avatarLink.value;
+	console.log(avatarUrl);
 	changeAvatar(avatarUrl);
 	closePopup(popupEditAvatar);
 }

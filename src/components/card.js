@@ -8,7 +8,8 @@ export function createCard(
 	userId,
 	howManyLikes,
 	putLike,
-	deleteLike
+	deleteLike,
+	deleteCard
 ) {
 	const cardTemplate = document.querySelector('#card-template').content;
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -23,7 +24,7 @@ export function createCard(
 	cardTitle.textContent = card.name;
 	const openPopupImage = () => openCardImagePopup(card);
 	cardImage.addEventListener('click', openPopupImage);
-	
+
 	Array.from(card.likes).forEach(item => {
 		if (item._id === userId) {
 			likeButtonClick(like);
