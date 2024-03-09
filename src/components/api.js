@@ -6,17 +6,19 @@ const config = {
 	},
 };
 
+function resCheckToOk(res) {
+	if (res.ok) {
+		return res.json();
+	}
+	return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 export const getUserInfo = () => {
 	return fetch(`${config.baseUrl}/users/me`, {
 		method: 'GET',
 		headers: config.headers,
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => {
 			console.log(err);
 		});
@@ -27,104 +29,68 @@ export const getInitialCards = () => {
 		method: 'GET',
 		headers: config.headers,
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => {
 			console.log(err);
 		});
 };
 
-export const updateProfile = () => {
+export const onEditProfile = (newProfile) => {
 	return fetch(`${config.baseUrl}/users/me`, {
 		method: 'PATCH',
 		headers: config.headers,
-		body: JSON.stringify({
-			name: 'Radik Zalalov',
-			about: 'Student',
-		}),
+		body: JSON.stringify(newProfile),
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => console.log(err));
 };
 
-export const newPlace = (card, userId) => {
+export const onNewPlace = (card) => {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: 'POST',
 		headers: config.headers,
 		body: JSON.stringify({
 			name: card.name,
 			link: card.link,
-			onwer: {
-				_d: userId,
-			},
 		}),
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => console.log(err));
 };
-export const deleteCard = cardId => {
+export const onDeleteCard = cardId => {
 	return fetch(`${config.baseUrl}/cards/${cardId}`, {
 		method: 'DELETE',
 		headers: config.headers,
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => {
 			console.log(err);
 		});
 };
 
-export const putLike = cardId => {
+export const onPutLike = cardId => {
 	return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
 		method: 'PUT',
 		headers: config.headers,
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => {
 			console.log(err);
 		});
 };
 
-export const deleteLike = cardId => {
+export const onDeleteLike = cardId => {
 	return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
 		method: 'DELETE',
 		headers: config.headers,
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => {
 			console.log(err);
 		});
 };
 
-export const changeAvatar = (url) => {
+export const onChangeAvatar = url => {
 	return fetch(`${config.baseUrl}/users/me/avatar`, {
 		method: 'PATCH',
 		headers: config.headers,
@@ -132,12 +98,7 @@ export const changeAvatar = (url) => {
 			avatar: url,
 		}),
 	})
-		.then(res => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
+		.then(res => resCheckToOk(res))
 		.catch(err => {
 			console.log(err);
 		});

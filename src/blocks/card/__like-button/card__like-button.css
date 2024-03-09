@@ -32,6 +32,7 @@
 .card__like-box	{
 	display: inline-flex;
 	flex-flow: column nowrap;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
+	gap: 3px;
 }
