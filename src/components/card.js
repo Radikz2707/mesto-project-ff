@@ -1,6 +1,5 @@
 let howManyLikes; // счетчик лайков
 let ownerId; // id создателя карточки
-let cardId; // id карточки
 
 export function createCard(
 	card,
@@ -20,16 +19,14 @@ export function createCard(
 	cardImage.src = card.link;
 	cardImage.alt = card.name;
 	cardTitle.textContent = card.name;
-	// секция для счетчика лайков и конпки установки лайка
+	// секция для счетчика лайков и кнопки установки лайка
 	const likesBox = cardElement.querySelector('.card__like-box'); // сама секция
 	const likeButton = likesBox.querySelector('.card__like-button'); // кнопка лайка
 	const likesCounterBox = likesBox.querySelector('.likes'); // поле для счетчика лайков
 	howManyLikes = card.likes.length; // количество пользователей равно длине массива likes
-	console.log(howManyLikes);
 	likesCounterBox.textContent = howManyLikes; // отображаем в карточке количество лайков
 
 	ownerId = card.owner._id;
-	cardId = card._id;
 
 	// функции-колбеки
 	const openPopupImage = () => openCardImagePopup(card);

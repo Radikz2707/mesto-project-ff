@@ -130,17 +130,19 @@ function handleAddFormSubmit(evt) {
 		name: placeInput.value,
 		link: placeLink.value,
 	};
-	cardList.prepend(
-		createCard(
-			card,
-			openCardImagePopup,
-			profileId,
-			cardToRemove,
-			openDeletePopup
-		)
-	);
-	onNewPlace(card);
-	closePopup(popupNew);
+
+	onNewPlace(card).then((card) => {
+		cardList.prepend(
+			createCard(
+				card,
+				openCardImagePopup,
+				profileId,
+				cardToRemove,
+				openDeletePopup
+			)
+		);
+		closePopup(popupNew);
+	});
 }
 // Функция-колбек попапа изображения карты
 function openCardImagePopup({ name, link }) {
