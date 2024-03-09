@@ -2,7 +2,13 @@ let howManyLikes; // счетчик лайков
 let ownerId; // id создателя карточки
 let cardId; // id карточки
 
-export function createCard(card, openCardImagePopup, removeCard, profileId) {
+export function createCard(
+	card,
+	openCardImagePopup,
+	profileId,
+	cardToRemove,
+	openDeletePopup
+) {
 	// Получение темплейта карточки и ее копирование
 	const cardTemplate = document.querySelector('#card-template').content;
 	const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -19,6 +25,7 @@ export function createCard(card, openCardImagePopup, removeCard, profileId) {
 	const likeButton = likesBox.querySelector('.card__like-button'); // кнопка лайка
 	const likesCounterBox = likesBox.querySelector('.likes'); // поле для счетчика лайков
 	howManyLikes = card.likes.length; // количество пользователей равно длине массива likes
+	console.log(howManyLikes);
 	likesCounterBox.textContent = howManyLikes; // отображаем в карточке количество лайков
 
 	ownerId = card.owner._id;
@@ -30,10 +37,12 @@ export function createCard(card, openCardImagePopup, removeCard, profileId) {
 		likeButtonToggle(likeButton);
 	};
 	const removeButtonClick = () => {
-		removeCard(cardElement, cardId);
+		cardToRemove._id = card._id;
+		card = cardElement;
+		openDeletePopup();
 	};
-	// удаление кнопки удаления карточки, если карта создана не пользователем	
-	if (ownerId !== profileId) { 
+	// удаление кнопки удаления карточки, если карта создана не пользователем
+	if (ownerId !== profileId) {
 		// если карта создана не пользователем
 		removeButton.classList.add('card__delete-button_disabled'); // display: none для кнопки
 	} else {

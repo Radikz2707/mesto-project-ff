@@ -51,8 +51,14 @@ const popupCardCaption = popupCard.querySelector('.popup__caption');
 // попап удаления карточки
 const deletePopup = pageContent.querySelector('.popup_type_delete-card');
 const deletePopupForm = deletePopup.querySelector('.popup__form');
+const deletePopupFormButton = deletePopupForm.querySelector('.popup__button');
 
 let profileId = ''; // ID профиля
+
+const cardToRemove = {
+	_id: null,
+	card: null,
+};
 
 // Функция редактирования профиля и отправки данных профиля на сайт
 function editProfile(profile) {
@@ -65,16 +71,18 @@ Promise.all([getInitialCards(), getUserInfo()]).then(([cards, profile]) => {
 	profileId = profile._id;
 	editProfile(profile);
 	cards.forEach(card => {
-		cardList.append(createCard(card, openCardImagePopup, removeCard, profileId));
+		cardList.append(
+			createCard(
+				card,
+				openCardImagePopup,
+				profileId,
+				cardToRemove,
+				openDeletePopup
+			)
+		);
 	});
 });
 // функция удаления карточки
-function removeCard(cardNode, cardId) {
-	console.log(cardNode);
-	openPopup(deletePopup);
-	deletePopupForm.addEventListener('submit', handleDeleteFormSubmit);
-	
-}
 
 //Вешаем слушатели  на кнопку закрытия попапа и оверлей
 popups.forEach(popup => {
@@ -100,6 +108,11 @@ profileAddButton.addEventListener('click', function (evt) {
 	openPopup(popupNew);
 });
 
+function openDeletePopup() {
+	openPopup(deletePopup);
+	deletePopupFormButton.addEventListener('click', handleDeleteFormSubmit);
+}
+
 // Функция-колбек слушателя сабмита формы редактирования профиля
 function handleEditFormSubmit(evt) {
 	evt.preventDefault();
@@ -117,7 +130,15 @@ function handleAddFormSubmit(evt) {
 		name: placeInput.value,
 		link: placeLink.value,
 	};
-	cardList.prepend(createCard(card, openCardImagePopup,removeCard, profileId));
+	cardList.prepend(
+		createCard(
+			card,
+			openCardImagePopup,
+			profileId,
+			cardToRemove,
+			openDeletePopup
+		)
+	);
 	onNewPlace(card);
 	closePopup(popupNew);
 }
@@ -130,11 +151,14 @@ function openCardImagePopup({ name, link }) {
 	openPopup(popupCard);
 }
 
-function handleDeleteFormSubmit(evt)	{
+function handleDeleteFormSubmit(evt) {
 	evt.preventDefault();
-	closePopup(deletePopup);
-	onDeleteCard(cardId);
-	cardNode.remove();
+	onDeleteCard(cardToRemove._id)
+		.then(() => {
+			cardToRemove.card.remove();
+			closePopup(deletePopup);
+		})
+		.catch(console.error);
 }
 // Слушатели на кнопки сабмит форм
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
