@@ -69,10 +69,11 @@ Promise.all([getInitialCards(), getUserInfo()]).then(([cards, profile]) => {
 	});
 });
 // функция удаления карточки
-function removeCard(cardElement) {
-	console.log(cardElement);
+function removeCard(cardNode, cardId) {
+	console.log(cardNode);
 	openPopup(deletePopup);
-	deletePopupForm.addEventListener('submit', handleDeleteFormSubmit)	
+	deletePopupForm.addEventListener('submit', handleDeleteFormSubmit);
+	
 }
 
 //Вешаем слушатели  на кнопку закрытия попапа и оверлей
@@ -129,11 +130,11 @@ function openCardImagePopup({ name, link }) {
 	openPopup(popupCard);
 }
 
-function handleDeleteFormSubmit(evt, cardElement, cardId)	{
+function handleDeleteFormSubmit(evt)	{
 	evt.preventDefault();
 	closePopup(deletePopup);
-	cardElement.remove();
 	onDeleteCard(cardId);
+	cardNode.remove();
 }
 // Слушатели на кнопки сабмит форм
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
