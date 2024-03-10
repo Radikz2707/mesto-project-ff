@@ -44,7 +44,8 @@ const profileJob = profileInfo.querySelector('.profile__description');
 // Форма изменения аватара
 const popupEditAvatar = pageContent.querySelector('.popup_type_edit_avatar');
 const popupEditAvatarForm = popupEditAvatar.querySelector('.popup__form');
-const popupEditAvatarFormButton = popupEditAvatarForm.querySelector('.popup__button');
+const popupEditAvatarFormButton =
+	popupEditAvatarForm.querySelector('.popup__button');
 const avatarLink = popupEditAvatarForm.querySelector(
 	'.popup__input_type_avatar_link'
 );
@@ -69,18 +70,11 @@ function changeButtonCaption(btnElement, caption) {
 	btnElement.textContent = caption;
 }
 
-// Функция редактирования профиля и отправки данных профиля на сайт
+// Функция заполнения данных профиля, полученными с сервера
 function editProfile(profile) {
-	changeButtonCaption(popupEditFormButton, caption);
-	onEditProfile(profile)
-		.then(() => {
-			profileTitle.textContent = profile.name;
-			profileJob.textContent = profile.about;
-			avatar.style.backgroundImage = `url(${profile.avatar})`;
-		})
-		.finally(() => {
-			changeButtonCaption(popupEditFormButton, buttonOriginalText);
-		});
+	profileTitle.textContent = profile.name;
+	profileJob.textContent = profile.about;
+	avatar.style.backgroundImage = `url(${profile.avatar})`;
 }
 
 Promise.all([getInitialCards(), getUserInfo()]).then(([cards, profile]) => {
@@ -124,6 +118,13 @@ profileAddButton.addEventListener('click', function (evt) {
 	clearValidation(popupNewForm, ValidationConfig);
 	openPopup(popupNew);
 });
+// Слушатель на аватар для открытия попапа редактирования аватара
+avatar.addEventListener('click', function (evt) {
+	evt.stopPropagation();
+	avatarLink.value = '';
+	clearValidation(popupEditAvatarForm, ValidationConfig);
+	openPopup(popupEditAvatar);
+});
 // Открытие попапа удаления карточки
 function openDeletePopup() {
 	openPopup(deletePopup);
@@ -139,8 +140,8 @@ function handleEditFormSubmit(evt) {
 	};
 	changeButtonCaption(popupEditFormButton, caption);
 	onEditProfile(newProfile)
-		.then(newProfile => {
-			editProfile(newProfile);
+		.then(profile => {
+			editProfile(profile);
 		})
 		.finally(() => {
 			changeButtonCaption(popupEditFormButton, buttonOriginalText);
@@ -192,25 +193,22 @@ function handleDeleteFormSubmit(evt) {
 		})
 		.catch(err => console.log(err));
 }
-
+// функция-колбек попапа редактирования аватара
 function handleEditAvatarFormSubmit(evt) {
 	evt.preventDefault();
 	const avatarUrl = avatarLink.value;
 	changeButtonCaption(popupEditAvatarFormButton, caption);
-	onChangeAvatar(avatarUrl).finally(()=>	{
-		changeButtonCaption(popupEditAvatarFormButton, buttonOriginalText);
-	})
+	onChangeAvatar(avatarUrl)
+		.then(profile => {
+			editProfile(profile);
+		})
+		.finally(() => {
+			changeButtonCaption(popupEditAvatarFormButton, buttonOriginalText);
+		});
 	closePopup(popupEditAvatar);
 }
 
 // Слушатели на кнопки сабмит форм
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
 popupNewForm.addEventListener('submit', handleAddFormSubmit);
-
-avatar.addEventListener('click', function (evt) {
-	evt.stopPropagation();
-	avatarLink.value = '';
-	clearValidation(popupEditAvatarForm, ValidationConfig);
-	openPopup(popupEditAvatar);
-});
 popupEditAvatarForm.addEventListener('submit', handleEditAvatarFormSubmit);

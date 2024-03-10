@@ -49,10 +49,7 @@ export const onNewPlace = (card) => {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: 'POST',
 		headers: config.headers,
-		body: JSON.stringify({
-			name: card.name,
-			link: card.link,
-		}),
+		body: JSON.stringify(card),
 	})
 		.then(res => resCheckToOk(res))
 		.catch(err => console.log(err));
