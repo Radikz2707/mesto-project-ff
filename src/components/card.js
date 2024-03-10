@@ -1,12 +1,28 @@
 let howManyLikes; // счетчик лайков
 let ownerId; // id создателя карточки
+let likes = [];
+
+function renderLikes({ likes, likeButton, likesCounterBox, profileId }) {
+	if (
+		likes.some(like => {
+			return like._id === profileId;
+		})
+	) {
+		likeButton.classList.add('card__like-button_is-active');
+	} else {
+		likeButton.classList.remove('card__like-button_is-active');
+	}
+	likesCounterBox.textContent = likes.length;
+}
 
 export function createCard(
 	card,
 	openCardImagePopup,
-	profileId,
 	cardToRemove,
-	openDeletePopup
+	profileId,
+	openDeletePopup,
+	onPutLike,
+	onDeleteLike
 ) {
 	// Получение темплейта карточки и ее копирование
 	const cardTemplate = document.querySelector('#card-template').content;
@@ -23,19 +39,21 @@ export function createCard(
 	const likesBox = cardElement.querySelector('.card__like-box'); // сама секция
 	const likeButton = likesBox.querySelector('.card__like-button'); // кнопка лайка
 	const likesCounterBox = likesBox.querySelector('.likes'); // поле для счетчика лайков
-	howManyLikes = card.likes.length; // количество пользователей равно длине массива likes
+	likes = card.likes;
+	howManyLikes = likes.length; // количество пользователей равно длине массива likes
 	likesCounterBox.textContent = howManyLikes; // отображаем в карточке количество лайков
 
+	renderLikes({ likes, likeButton, likesCounterBox, profileId });
 	ownerId = card.owner._id;
 
 	// функции-колбеки
 	const openPopupImage = () => openCardImagePopup(card);
 	const likeButtonClick = () => {
-		likeButtonToggle(likeButton);
+		
 	};
 	const removeButtonClick = () => {
 		cardToRemove._id = card._id;
-		card = cardElement;
+		cardToRemove.card = cardElement;
 		openDeletePopup();
 	};
 	// удаление кнопки удаления карточки, если карта создана не пользователем
@@ -51,9 +69,4 @@ export function createCard(
 	likeButton.addEventListener('click', likeButtonClick);
 	// возвращаем созданную карточку
 	return cardElement;
-}
-
-// функция окрашивания кнопки лайка карточки
-function likeButtonToggle(likeButton) {
-	likeButton.classList.toggle('card__like-button_is-active');
 }

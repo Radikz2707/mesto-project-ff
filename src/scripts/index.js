@@ -26,6 +26,8 @@ const popupEdit = pageContent.querySelector('.popup_type_edit');
 const popupEditForm = popupEdit.querySelector('.popup__form');
 const nameInput = popupEditForm.querySelector('.popup__input_type_name');
 const jobInput = popupEditForm.querySelector('.popup__input_type_description');
+const popupEditFormButton = popupEditForm.querySelector('.popup__button');
+const buttonOriginalText = popupEditFormButton.textContent;
 // Форма добавления карты
 const popupNew = pageContent.querySelector('.popup_type_new-card');
 const popupNewForm = popupNew.querySelector('.popup__form');
@@ -54,6 +56,7 @@ const deletePopupForm = deletePopup.querySelector('.popup__form');
 const deletePopupFormButton = deletePopupForm.querySelector('.popup__button');
 
 let profileId = ''; // ID профиля
+const editIconUrl = '../images/edit-icon.svg';
 
 const cardToRemove = {
 	_id: null,
@@ -64,6 +67,15 @@ const cardToRemove = {
 function editProfile(profile) {
 	profileTitle.textContent = profile.name;
 	profileJob.textContent = profile.about;
+	avatar.style.backgroundImage = `url(${profile.avatar})`;
+	avatar.addEventListener('mouseover', evt => {
+		evt.stopPropagation();
+		avatar.style.backgroundImage = `url(${editIconUrl})`;
+	});
+	avatar.addEventListener('mouseout', evt => {
+		evt.stopPropagation();
+		avatar.style.backgroundImage = `url(${profile.avatar})`;
+	});
 	onEditProfile(profile);
 }
 
@@ -75,14 +87,15 @@ Promise.all([getInitialCards(), getUserInfo()]).then(([cards, profile]) => {
 			createCard(
 				card,
 				openCardImagePopup,
-				profileId,
 				cardToRemove,
-				openDeletePopup
+				profileId,
+				openDeletePopup,
+				onPutLike,
+				onDeleteLike
 			)
 		);
 	});
 });
-// функция удаления карточки
 
 //Вешаем слушатели  на кнопку закрытия попапа и оверлей
 popups.forEach(popup => {
@@ -107,7 +120,7 @@ profileAddButton.addEventListener('click', function (evt) {
 	clearValidation(popupNewForm, ValidationConfig);
 	openPopup(popupNew);
 });
-
+// Открытие попапа удаления карточки
 function openDeletePopup() {
 	openPopup(deletePopup);
 	deletePopupFormButton.addEventListener('click', handleDeleteFormSubmit);
@@ -126,19 +139,20 @@ function handleEditFormSubmit(evt) {
 // Функция-колбек слушателя сабмита формы добавлениЯ карты
 function handleAddFormSubmit(evt) {
 	evt.preventDefault();
-	const card = {
+	const newPlace = {
 		name: placeInput.value,
 		link: placeLink.value,
 	};
-
-	onNewPlace(card).then((card) => {
+	onNewPlace(newPlace).then(newPlace => {
 		cardList.prepend(
 			createCard(
-				card,
+				newPlace,
 				openCardImagePopup,
-				profileId,
 				cardToRemove,
-				openDeletePopup
+				profileId,
+				openDeletePopup,
+				onPutLike,
+				onDeleteLike
 			)
 		);
 		closePopup(popupNew);
@@ -152,7 +166,7 @@ function openCardImagePopup({ name, link }) {
 	popupCardCaption.textContent = name;
 	openPopup(popupCard);
 }
-
+// функция-колбек попапа удаления карточки
 function handleDeleteFormSubmit(evt) {
 	evt.preventDefault();
 	onDeleteCard(cardToRemove._id)
@@ -160,8 +174,24 @@ function handleDeleteFormSubmit(evt) {
 			cardToRemove.card.remove();
 			closePopup(deletePopup);
 		})
-		.catch(console.error);
+		.catch(err => console.log(err));
 }
+
+function handleEditAvatarFormSubmit(evt) {
+	evt.preventDefault();
+	const avatarUrl = avatarLink.value;
+	onChangeAvatar(avatarUrl);
+	closePopup(popupEditAvatar);
+}
+
 // Слушатели на кнопки сабмит форм
 popupEditForm.addEventListener('submit', handleEditFormSubmit);
 popupNewForm.addEventListener('submit', handleAddFormSubmit);
+
+avatar.addEventListener('click', function (evt) {
+	evt.stopPropagation();
+	avatarLink.value = '';
+	clearValidation(popupEditAvatarForm, ValidationConfig);
+	openPopup(popupEditAvatar);
+});
+popupEditAvatarForm.addEventListener('submit', handleEditAvatarFormSubmit);
