@@ -31,6 +31,7 @@ const buttonOriginalText = popupEditFormButton.textContent;
 // Форма добавления карты
 const popupNew = pageContent.querySelector('.popup_type_new-card');
 const popupNewForm = popupNew.querySelector('.popup__form');
+const popupNewFormButton = popupNewForm.querySelector('.popup__button');
 const placeInput = popupNewForm.querySelector('.popup__input_type_card-name');
 const placeLink = popupNewForm.querySelector('.popup__input_type_url');
 // Данные пользователя и кнопки
@@ -43,6 +44,7 @@ const profileJob = profileInfo.querySelector('.profile__description');
 // Форма изменения аватара
 const popupEditAvatar = pageContent.querySelector('.popup_type_edit_avatar');
 const popupEditAvatarForm = popupEditAvatar.querySelector('.popup__form');
+const popupEditAvatarFormButton = popupEditAvatarForm.querySelector('.popup__button');
 const avatarLink = popupEditAvatarForm.querySelector(
 	'.popup__input_type_avatar_link'
 );
@@ -56,27 +58,29 @@ const deletePopupForm = deletePopup.querySelector('.popup__form');
 const deletePopupFormButton = deletePopupForm.querySelector('.popup__button');
 
 let profileId = ''; // ID профиля
-const editIconUrl = '../images/edit-icon.svg';
+const caption = 'Сохранение...';
 
 const cardToRemove = {
 	_id: null,
 	card: null,
 };
 
+function changeButtonCaption(btnElement, caption) {
+	btnElement.textContent = caption;
+}
+
 // Функция редактирования профиля и отправки данных профиля на сайт
 function editProfile(profile) {
-	profileTitle.textContent = profile.name;
-	profileJob.textContent = profile.about;
-	avatar.style.backgroundImage = `url(${profile.avatar})`;
-	avatar.addEventListener('mouseover', evt => {
-		evt.stopPropagation();
-		avatar.style.backgroundImage = `url(${editIconUrl})`;
-	});
-	avatar.addEventListener('mouseout', evt => {
-		evt.stopPropagation();
-		avatar.style.backgroundImage = `url(${profile.avatar})`;
-	});
-	onEditProfile(profile);
+	changeButtonCaption(popupEditFormButton, caption);
+	onEditProfile(profile)
+		.then(() => {
+			profileTitle.textContent = profile.name;
+			profileJob.textContent = profile.about;
+			avatar.style.backgroundImage = `url(${profile.avatar})`;
+		})
+		.finally(() => {
+			changeButtonCaption(popupEditFormButton, buttonOriginalText);
+		});
 }
 
 Promise.all([getInitialCards(), getUserInfo()]).then(([cards, profile]) => {
@@ -133,7 +137,14 @@ function handleEditFormSubmit(evt) {
 		name: nameInput.value,
 		about: jobInput.value,
 	};
-	onEditProfile(newProfile).then(newProfile => editProfile(newProfile));
+	changeButtonCaption(popupEditFormButton, caption);
+	onEditProfile(newProfile)
+		.then(newProfile => {
+			editProfile(newProfile);
+		})
+		.finally(() => {
+			changeButtonCaption(popupEditFormButton, buttonOriginalText);
+		});
 	closePopup(popupEdit);
 }
 // Функция-колбек слушателя сабмита формы добавлениЯ карты
@@ -143,20 +154,25 @@ function handleAddFormSubmit(evt) {
 		name: placeInput.value,
 		link: placeLink.value,
 	};
-	onNewPlace(newPlace).then(newPlace => {
-		cardList.prepend(
-			createCard(
-				newPlace,
-				openCardImagePopup,
-				cardToRemove,
-				profileId,
-				openDeletePopup,
-				onPutLike,
-				onDeleteLike
-			)
-		);
-		closePopup(popupNew);
-	});
+	changeButtonCaption(popupNewFormButton, caption);
+	onNewPlace(newPlace)
+		.then(newPlace => {
+			cardList.prepend(
+				createCard(
+					newPlace,
+					openCardImagePopup,
+					cardToRemove,
+					profileId,
+					openDeletePopup,
+					onPutLike,
+					onDeleteLike
+				)
+			);
+		})
+		.finally(() => {
+			changeButtonCaption(popupNewFormButton, buttonOriginalText);
+		});
+	closePopup(popupNew);
 }
 // Функция-колбек попапа изображения карты
 function openCardImagePopup({ name, link }) {
@@ -180,7 +196,10 @@ function handleDeleteFormSubmit(evt) {
 function handleEditAvatarFormSubmit(evt) {
 	evt.preventDefault();
 	const avatarUrl = avatarLink.value;
-	onChangeAvatar(avatarUrl);
+	changeButtonCaption(popupEditAvatarFormButton, caption);
+	onChangeAvatar(avatarUrl).finally(()=>	{
+		changeButtonCaption(popupEditAvatarFormButton, buttonOriginalText);
+	})
 	closePopup(popupEditAvatar);
 }
 

@@ -1,22 +1,41 @@
 .profile__image {
-  width: 120px;
-  height: 120px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  margin: 0 29px 0 0;
+	width: 120px;
+	height: 120px;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	background-size: cover;
+	background-position: center;
+	margin: 0 29px 0 0;
+	position: relative;
+}
+
+.profile__image:hover {
+	opacity: 0.6;
+	cursor: pointer;
+}
+
+.profile__image:hover::after {
+	content: '';
+	position: absolute;
+	height: 26px;
+	width: 26px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: url(../../../images/edit-icon.svg) center no-repeat;
+	background-size: cover;
+	z-index: 2;
 }
 
 @media screen and (max-width: 740px) {
-  .profile__image {
-    margin: 0 10px 0 0;
-  }
+	.profile__image {
+		margin: 0 10px 0 0;
+	}
 }
 
 @media screen and (max-width: 480px) {
-  .profile__image {
-    margin-right: 0;
-  }
+	.profile__image {
+		margin-right: 0;
+	}
 }
