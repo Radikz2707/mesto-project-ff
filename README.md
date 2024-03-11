@@ -1,1 +1,1 @@
-Ссылка на сайт (https://github.com/Radikz2707/mesto-project-ff.git)
+Ссылка на сайт (https://radikz2707.github.io/mesto-project-ff/)
