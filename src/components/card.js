@@ -1,13 +1,9 @@
-let howManyLikes; // счетчик лайков
+let howManyLikes = 0; // счетчик лайков
 let ownerId; // id создателя карточки
-let likes = [];
+let likes = []; // массив пользователей, которые лайкнули карточку
 
 function renderLikes({ likes, likeButton, likesCounterBox, profileId }) {
-	if (
-		likes.some(like => {
-			return like._id === profileId;
-		})
-	) {
+	if (likes.some(like => like._id === profileId)) {
 		likeButton.classList.add('card__like-button_is-active');
 	} else {
 		likeButton.classList.remove('card__like-button_is-active');
@@ -40,16 +36,25 @@ export function createCard(
 	const likeButton = likesBox.querySelector('.card__like-button'); // кнопка лайка
 	const likesCounterBox = likesBox.querySelector('.likes'); // поле для счетчика лайков
 	likes = card.likes;
-	howManyLikes = likes.length; // количество пользователей равно длине массива likes
+	howManyLikes = card.likes.length; // количество пользователей равно длине массива likes
 	likesCounterBox.textContent = howManyLikes; // отображаем в карточке количество лайков
-
 	renderLikes({ likes, likeButton, likesCounterBox, profileId });
 	ownerId = card.owner._id;
 
 	// функции-колбеки
 	const openPopupImage = () => openCardImagePopup(card);
 	const likeButtonClick = () => {
-		
+		if (likeButton.classList.contains('card__like-button_is-active')) {
+			onDeleteLike(card._id).then(card => {
+				likeButton.classList.remove('card__like-button_is-active');
+				likesCounterBox.textContent = card.likes.length;
+			});
+		} else {
+			onPutLike(card._id).then(card => {
+				likeButton.classList.add('card__like-button_is-active');
+				likesCounterBox.textContent = card.likes.length;
+			});
+		}
 	};
 	const removeButtonClick = () => {
 		cardToRemove._id = card._id;
