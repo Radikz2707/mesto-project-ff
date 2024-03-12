@@ -17,74 +17,50 @@ export const getUserInfo = () => {
 	return fetch(`${config.baseUrl}/users/me`, {
 		method: 'GET',
 		headers: config.headers,
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => {
-			console.log(err);
-		});
+	}).then(res => resCheckToOk(res));
 };
 
 export const getInitialCards = () => {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: 'GET',
 		headers: config.headers,
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => {
-			console.log(err);
-		});
+	}).then(res => resCheckToOk(res));
 };
 
-export const onEditProfile = (newProfile) => {
+export const onEditProfile = newProfile => {
 	return fetch(`${config.baseUrl}/users/me`, {
 		method: 'PATCH',
 		headers: config.headers,
 		body: JSON.stringify(newProfile),
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => console.log(err));
+	}).then(res => resCheckToOk(res));
 };
 
-export const onNewPlace = (card) => {
+export const onNewPlace = card => {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: 'POST',
 		headers: config.headers,
 		body: JSON.stringify(card),
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => console.log(err));
+	}).then(res => resCheckToOk(res));
 };
 export const onDeleteCard = cardId => {
 	return fetch(`${config.baseUrl}/cards/${cardId}`, {
 		method: 'DELETE',
 		headers: config.headers,
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => {
-			console.log(err);
-		});
+	}).then(res => resCheckToOk(res));
 };
 
 export const onPutLike = cardId => {
 	return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
 		method: 'PUT',
 		headers: config.headers,
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => {
-			console.log(err);
-		});
+	}).then(res => resCheckToOk(res));
 };
 
 export const onDeleteLike = cardId => {
 	return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
 		method: 'DELETE',
 		headers: config.headers,
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => {
-			console.log(err);
-		});
+	}).then(res => resCheckToOk(res));
 };
 
 export const onChangeAvatar = url => {
@@ -94,9 +70,5 @@ export const onChangeAvatar = url => {
 		body: JSON.stringify({
 			avatar: url,
 		}),
-	})
-		.then(res => resCheckToOk(res))
-		.catch(err => {
-			console.log(err);
-		});
+	}).then(res => resCheckToOk(res));
 };

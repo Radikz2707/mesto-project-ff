@@ -1,7 +1,3 @@
-let howManyLikes = 0; // счетчик лайков
-let ownerId; // id создателя карточки
-let likes = []; // массив пользователей, которые лайкнули карточку
-
 function renderLikes({ likes, likeButton, likesCounterBox, profileId }) {
 	if (likes.some(like => like._id === profileId)) {
 		likeButton.classList.add('card__like-button_is-active');
@@ -11,10 +7,15 @@ function renderLikes({ likes, likeButton, likesCounterBox, profileId }) {
 	likesCounterBox.textContent = likes.length;
 }
 
+function removeCardCallbackFactory(cardNode) {
+	return function () {
+		cardNode.remove();
+	};
+}
+
 export function createCard(
 	card,
 	openCardImagePopup,
-	cardToRemove,
 	profileId,
 	openDeletePopup,
 	onPutLike,
@@ -35,31 +36,31 @@ export function createCard(
 	const likesBox = cardElement.querySelector('.card__like-box'); // сама секция
 	const likeButton = likesBox.querySelector('.card__like-button'); // кнопка лайка
 	const likesCounterBox = likesBox.querySelector('.likes'); // поле для счетчика лайков
-	likes = card.likes;
-	howManyLikes = card.likes.length; // количество пользователей равно длине массива likes
-	likesCounterBox.textContent = howManyLikes; // отображаем в карточке количество лайков
+	let likes = card.likes;
 	renderLikes({ likes, likeButton, likesCounterBox, profileId });
-	ownerId = card.owner._id;
+	let ownerId = card.owner._id;
 
 	// функции-колбеки
 	const openPopupImage = () => openCardImagePopup(card);
 	const likeButtonClick = () => {
 		if (likeButton.classList.contains('card__like-button_is-active')) {
-			onDeleteLike(card._id).then(card => {
-				likeButton.classList.remove('card__like-button_is-active');
-				likesCounterBox.textContent = card.likes.length;
-			});
+			onDeleteLike(card._id)
+				.then(card => {
+					likeButton.classList.remove('card__like-button_is-active');
+					likesCounterBox.textContent = card.likes.length;
+				})
+				.catch(err => console.log(err));
 		} else {
-			onPutLike(card._id).then(card => {
-				likeButton.classList.add('card__like-button_is-active');
-				likesCounterBox.textContent = card.likes.length;
-			});
+			onPutLike(card._id)
+				.then(card => {
+					likeButton.classList.add('card__like-button_is-active');
+					likesCounterBox.textContent = card.likes.length;
+				})
+				.catch(err => console.log(err));
 		}
 	};
 	const removeButtonClick = () => {
-		cardToRemove._id = card._id;
-		cardToRemove.card = cardElement;
-		openDeletePopup();
+		openDeletePopup(card._id, removeCardCallbackFactory(cardElement));
 	};
 	// удаление кнопки удаления карточки, если карта создана не пользователем
 	if (ownerId !== profileId) {

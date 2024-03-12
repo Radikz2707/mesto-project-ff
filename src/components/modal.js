@@ -10,9 +10,10 @@ function closeByEsc(evt) {
 	// функция для закрытия попапа по кнопке ESC
 	const ESC_CODE = 27;
 	if (evt.keyCode === ESC_CODE) {
-		const target = popups.find(popup =>
-			popup.classList.contains('popup_is-opened')
-		);
+		// const target = popups.find(popup =>
+		// 	popup.classList.contains('popup_is-opened')
+		// );
+		const target = document.querySelector('.popup_is-opened');
 		closePopup(target);
 	}
 }

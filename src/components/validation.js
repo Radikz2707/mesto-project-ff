@@ -1,20 +1,19 @@
-function enableValidation(ValidationConfig) {
-	let { formSelector } = ValidationConfig;
+function enableValidation(validationConfig) {
+	let { formSelector } = validationConfig;
 	const formList = Array.from(document.querySelectorAll(formSelector));
 	formList.forEach(formElement => {
-		setEventListeners(formElement, ValidationConfig);
+		setEventListeners(formElement, validationConfig);
 	});
 }
 
-function clearValidation(formElement, ValidationConfig) {
-	let { inputSelector, submitButtonSelector } =
-		ValidationConfig;
+function clearValidation(formElement, validationConfig) {
+	let { inputSelector, submitButtonSelector } = validationConfig;
 	const inputList = Array.from(formElement.querySelectorAll(inputSelector));
 	const buttonElement = formElement.querySelector(submitButtonSelector);
 	inputList.forEach(inputElement => {
-		hideInputError(formElement, inputElement, ValidationConfig);
+		hideInputError(formElement, inputElement, validationConfig);
 	});
-	toggleButtonState(inputList, buttonElement, ValidationConfig);
+	toggleButtonState(inputList, buttonElement, validationConfig);
 }
 
 function hasInvalidInput(inputList) {
@@ -23,8 +22,8 @@ function hasInvalidInput(inputList) {
 	});
 }
 
-function toggleButtonState(inputList, buttonElement, ValidationConfig) {
-	let { inactiveButtonClass } = ValidationConfig;
+function toggleButtonState(inputList, buttonElement, validationConfig) {
+	let { inactiveButtonClass } = validationConfig;
 	if (hasInvalidInput(inputList)) {
 		buttonElement.disabled = true;
 		buttonElement.classList.add(inactiveButtonClass);
@@ -34,15 +33,15 @@ function toggleButtonState(inputList, buttonElement, ValidationConfig) {
 	}
 }
 
-function setEventListeners(formElement, ValidationConfig) {
-	let { inputSelector, submitButtonSelector } = ValidationConfig;
+function setEventListeners(formElement, validationConfig) {
+	let { inputSelector, submitButtonSelector } = validationConfig;
 	const inputList = Array.from(formElement.querySelectorAll(inputSelector));
 	const buttonElement = formElement.querySelector(submitButtonSelector);
-	toggleButtonState(inputList, buttonElement, ValidationConfig);
+	toggleButtonState(inputList, buttonElement, validationConfig);
 	inputList.forEach(inputElement => {
 		inputElement.addEventListener('input', () => {
-			isValid(formElement, inputElement, ValidationConfig);
-			toggleButtonState(inputList, buttonElement, ValidationConfig);
+			isValid(formElement, inputElement, validationConfig);
+			toggleButtonState(inputList, buttonElement, validationConfig);
 		});
 	});
 }
@@ -51,24 +50,24 @@ function showInputError(
 	formElement,
 	inputElement,
 	errorMessage,
-	ValidationConfig
+	validationConfig
 ) {
-	let { inputErrorClass, errorClass } = ValidationConfig;
+	let { inputErrorClass, errorClass } = validationConfig;
 	const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
 	inputElement.classList.add(inputErrorClass);
 	errorElement.textContent = errorMessage;
 	errorElement.classList.add(errorClass);
 }
 
-function hideInputError(formElement, inputElement, ValidationConfig) {
-	let { inputErrorClass, errorClass } = ValidationConfig;
+function hideInputError(formElement, inputElement, validationConfig) {
+	let { inputErrorClass, errorClass } = validationConfig;
 	const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
 	inputElement.classList.remove(inputErrorClass);
 	errorElement.classList.remove(errorClass);
 	errorElement.textContent = '';
 }
 
-function isValid(formElement, inputElement, ValidationConfig) {
+function isValid(formElement, inputElement, validationConfig) {
 	if (inputElement.validity.patternMismatch) {
 		inputElement.setCustomValidity(inputElement.dataset.errorMessage);
 	} else {
@@ -79,10 +78,10 @@ function isValid(formElement, inputElement, ValidationConfig) {
 			formElement,
 			inputElement,
 			inputElement.validationMessage,
-			ValidationConfig
+			validationConfig
 		);
 	} else {
-		hideInputError(formElement, inputElement, ValidationConfig);
+		hideInputError(formElement, inputElement, validationConfig);
 	}
 }
 
