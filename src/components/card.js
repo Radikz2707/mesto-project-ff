@@ -44,21 +44,24 @@ export function createCard(
 	const openPopupImage = () => openCardImagePopup(card);
 	const likeButtonClick = () => {
 		if (likeButton.classList.contains('card__like-button_is-active')) {
-			onDeleteLike(card._id)
-				then(({likes: newLikes}) => {
-					// likes = card.likes
-					// likeButton.classList.remove('card__like-button_is-active');
-					// likesCounterBox.textContent = card.likes.length;
-					renderLikes({ likes: newLikes, likeButton, likesCounterBox, profileId });
-				})
-				.catch(err => console.log(err));
+			onDeleteLike(card._id);
+			then(({ likes: newLikes }) => {
+				renderLikes({
+					likes: newLikes,
+					likeButton,
+					likesCounterBox,
+					profileId,
+				});
+			}).catch(err => console.log(err));
 		} else {
 			onPutLike(card._id)
-				.then(({likes: newLikes}) => {
-					// likes = card.likes
-					// likeButton.classList.add('card__like-button_is-active');
-					// likesCounterBox.textContent = card.likes.length;
-					renderLikes({ likes: newLikes, likeButton, likesCounterBox, profileId });
+				.then(({ likes: newLikes }) => {
+					renderLikes({
+						likes: newLikes,
+						likeButton,
+						likesCounterBox,
+						profileId,
+					});
 				})
 				.catch(err => console.log(err));
 		}
