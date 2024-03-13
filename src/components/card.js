@@ -45,14 +45,15 @@ export function createCard(
 	const likeButtonClick = () => {
 		if (likeButton.classList.contains('card__like-button_is-active')) {
 			onDeleteLike(card._id)
-			.then(({ likes: newLikes }) => {
-				renderLikes({
-					likes: newLikes,
-					likeButton,
-					likesCounterBox,
-					profileId,
-				});
-			}).catch(err => console.log(err));
+				.then(({ likes: newLikes }) => {
+					renderLikes({
+						likes: newLikes,
+						likeButton,
+						likesCounterBox,
+						profileId,
+					});
+				})
+				.catch(err => console.log(err));
 		} else {
 			onPutLike(card._id)
 				.then(({ likes: newLikes }) => {
