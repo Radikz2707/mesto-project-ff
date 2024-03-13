@@ -44,8 +44,8 @@ export function createCard(
 	const openPopupImage = () => openCardImagePopup(card);
 	const likeButtonClick = () => {
 		if (likeButton.classList.contains('card__like-button_is-active')) {
-			onDeleteLike(card._id);
-			then(({ likes: newLikes }) => {
+			onDeleteLike(card._id)
+			.then(({ likes: newLikes }) => {
 				renderLikes({
 					likes: newLikes,
 					likeButton,
