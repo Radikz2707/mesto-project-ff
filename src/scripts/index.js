@@ -1,7 +1,7 @@
 'use strict';
 
 import '../styles/index.css'; // добавьте импорт главного файла стилей
-import { createCard } from '../components/card';
+import { createCard, removeCard } from '../components/card';
 import { openPopup, closePopup, handleOverlayClick } from '../components/modal';
 import { validationConfig } from '../components/constant';
 import { clearValidation, enableValidation } from '../components/validation';
@@ -59,12 +59,12 @@ const buttonDeletePopup = formDeletePopup.querySelector('.popup__button');
 
 let profileId = ''; // ID профиля
 const caption = 'Сохранение...';
-
+// объект карточки для удаления с ключами id карточки и элемента DOM карточки
 const cardToRemove = {
 	_id: null,
-	removeFn: null,
+	card: null,
 };
-
+// Функция изменения надписи на кнопке
 function changeButtonCaption(btnElement, caption) {
 	btnElement.textContent = caption;
 }
@@ -126,9 +126,9 @@ avatar.addEventListener('click', function (evt) {
 	openPopup(avatarEditPopup);
 });
 // Открытие попапа удаления карточки
-function openDeletePopup(cardId, removeFn) {
+function openDeletePopup(cardId, card) {
 	cardToRemove._id = cardId;
-	cardToRemove.removeFn = removeFn;
+	cardToRemove.card = card;
 	openPopup(deletePopup);
 }
 
@@ -190,7 +190,7 @@ function handleDeleteFormSubmit(evt) {
 	evt.preventDefault();
 	onDeleteCard(cardToRemove._id)
 		.then(() => {
-			cardToRemove.removeFn();
+			removeCard(cardToRemove.card);
 			closePopup(deletePopup);
 		})
 		.catch(err => console.log(err));
